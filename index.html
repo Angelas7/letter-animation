@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Birthday Letter</title>
+    <style>
+        /* Global Styling */
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://marketplace.canva.com/EAGK_VGJ-wk/1/0/1600w/canva-purple-illustrative-lavender-desktop-wallpaper-IJjKe9JIOeM.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            flex-direction: column;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Floating animation for elements (flowers, sparkles, etc.) */
+        @keyframes floating {
+            0% { transform: translateY(0); opacity: 0.7; }
+            50% { transform: translateY(30px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 0.7; }
+        }
+
+        /* Common styles for flowers, symbols (star, heart, etc.) */
+        .symbol {
+            font-size: 40px;
+            cursor: pointer;
+            position: absolute;
+            user-select: none;
+            animation: floating 3s ease-in-out infinite;
+            transition: transform 0.2s ease;
+        }
+
+        .symbol:hover {
+            transform: scale(1.2);
+        }
+
+        /* Envelope and Letter Styling */
+        .envelope {
+            position: relative;
+            width: 500px;
+            height: 350px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #9b5de5;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        /* Envelope Flap */
+        .flap {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background-color: #9b5de5;
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transform: rotateX(0deg);
+            transition: transform 0.4s ease-in-out;
+        }
+
+        /* Letter Content */
+        .letter {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 1.8;
+            font-size: 18px;
+            font-family: "Arial", sans-serif;
+            font-weight: bold;
+            color: #6a0dad;
+            border-top: 2px solid #9b5de5;
+            border-radius: 16px 16px 0 0;
+            transition: top 0.4s ease-in-out;
+            overflow-y: scroll;
+            max-height: 70vh;
+        }
+
+        .greeting {
+            font-family: "Dancing Script", cursive;
+            font-size: 30px;
+            color: #9b5de5;
+        }
+
+        /* Heart Button */
+        .heart {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 28px;
+            color: #e63946;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .heart:hover {
+            transform: scale(1.2);
+        }
+
+        .heart.liked {
+            color: #ff6b6b;
+        }
+
+        /* Envelope Open State */
+        .envelope.opened .flap {
+            transform: rotateX(-180deg);
+        }
+
+        .envelope.opened .letter {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+    <!-- Include Dancing Script font -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Envelope with Letter -->
+    <div class="envelope" id="envelope">
+        <div class="flap"></div>
+        <div class="letter">
+            <div class="greeting">To Bhavya</div>
+            <div class="content">
+                To my dearest friend on her 19th,<br><br>
+                This is your last year of teen chaos,<br>
+                And yet, you've lived with grace I often pause to admire.<br><br>
+                We didn’t plan this friendship—it just bloomed,<br>
+                And now it feels like fate, as if it’s always been groomed.<br><br>
+                You’re not just a friend; you’re a whole vibe,<br>
+                With your curly hair, bubbly laugh, and endless light inside.<br><br>
+                You carry wisdom far beyond your years,<br>
+                Yet you’re the youngest, wiping away fears.<br><br>
+                When I came to your city, I felt right at home,<br>
+                Every moment was pure fun,<br>
+                The kind that lingers long after it’s done.<br><br>
+                <strong>You’ve been the one who listens,</strong><br>
+                Who makes every conversation feel complete.<br>
+                You never make it about yourself,<br>
+                And that’s a magic not many can keep.<br><br>
+                Happy birthday, Batman.<br>
+                Let’s make more memories.<br><br>
+                With love,<br>
+                Angela
+            </div>
+        </div>
+        <div class="heart" id="heart">❤</div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const heart = document.getElementById('heart');
+
+        // Toggle envelope opening
+        envelope.addEventListener('click', () => {
+            envelope.classList.toggle('opened');
+        });
+
+        // Like the letter
+        heart.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent toggling the envelope
+            heart.classList.toggle('liked');
+        });
+
+        // Add symbols (flowers, stars, hearts, animals)
+        const symbols = ['🌹', '🌻', '🌷', '🌼', '🌸', '⭐', '❤️', '🐶', '🐱', '🦋', '🌟'];
+
+        // Function to create a new symbol
+        function createSymbol(symbol) {
+            const symbolElement = document.createElement('div');
+            symbolElement.classList.add('symbol');
+            symbolElement.textContent = symbol;
+            symbolElement.style.top = `${Math.random() * 100}%`;  // Random top position within bounds
+            symbolElement.style.left = `${Math.random() * 100}%`; // Random left position within bounds
+
+            // Handle symbol click to multiply
+            symbolElement.addEventListener('click', (e) => {
+                createSymbol(symbol);  // Create and append a new symbol on click
+                e.stopPropagation(); // Prevent event from bubbling up
+            });
+
+            document.body.appendChild(symbolElement);
+        }
+
+        // Create initial symbols
+        symbols.forEach(symbol => createSymbol(symbol));
+    </script>
+</body>
+</html>
